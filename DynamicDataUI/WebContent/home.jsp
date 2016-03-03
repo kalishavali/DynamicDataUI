@@ -75,7 +75,7 @@
 		headerValue="Select State" list="states" name="state"
 		value="defaultState" />
 	District :
-	<select id="district"></select>
+	<select id="district"><option>Pleset Select State</option></select>
 	Panchayat:
 	<select id="panchayat"></select>
 </body>

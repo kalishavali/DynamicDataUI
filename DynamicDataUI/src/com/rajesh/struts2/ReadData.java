@@ -59,6 +59,7 @@ public class ReadData extends ActionSupport {
 			districts.add("Bommanahalli");
 			districts.add("Mysore");
 		} else if (state.equalsIgnoreCase("-1")) {
+			
 		}else {
 			districts.add("District 1");
 			districts.add("District 2");
@@ -72,17 +73,17 @@ public class ReadData extends ActionSupport {
 		System.out.println("Getting Districts for " + district);
 		// Do the database code or business logic here.
 		panchayats = new ArrayList<String>();
-		if (district.equalsIgnoreCase("tamilnadu")) {
+		if (district.equalsIgnoreCase("chennai")) {
 			panchayats.add("chennai");
 			panchayats.add("madurai");
 			panchayats.add("trichy");
 			panchayats.add("Covai");
 			panchayats.add("Pudukkottai");
-		} else if (district.equalsIgnoreCase("kerala")) {
+		} else if (district.equalsIgnoreCase("madurai")) {
 			panchayats.add("allappey");
 			panchayats.add("trivandrum");
 			panchayats.add("kozhikkode");
-		} else if (district.equalsIgnoreCase("karnataka")) {
+		} else if (district.equalsIgnoreCase("trichy")) {
 			panchayats.add("bangalore");
 			panchayats.add("Bommanahalli");
 			panchayats.add("Mysore");
