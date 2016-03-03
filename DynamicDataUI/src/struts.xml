@@ -21,6 +21,11 @@
 		<action name="" class="com.rajesh.struts2.ReadData" method="dbStates">
 			<result name="success">home.jsp</result>
 		</action>
+		
+		<action name="readPanchayats" class="com.rajesh.struts2.ReadData"
+			method="dbPanchayats">
+			<result type="json"></result>
+		</action>
 
 	</package>
 </struts>

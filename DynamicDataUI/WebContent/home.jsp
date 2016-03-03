@@ -40,6 +40,31 @@
 						}
 					});
 				});
+		$("#district").change(
+				function() {
+					$('#panchayat').html('');
+					var district = {
+						"district" : $("#district").val()
+					};
+					$.ajax({
+						url : "readPanchayats",
+						data : JSON.stringify(district),
+						dataType : 'json',
+						contentType : 'application/json',
+						type : 'POST',
+						async : true,
+						success : function(res) {
+							console.log(res.panchayats.length);
+							for ( var i = 0; i < res.panchayats.length; i++) {
+								console.log(" " + res.panchayats[i]);
+								$('#panchayat').append(
+										'<option value=' + res.panchayats[i] + '>'
+												+ res.panchayats[i]
+												+ '</option>');
+							}
+						}
+					});
+				});
 	});
 </script>
 </head>
@@ -51,6 +76,8 @@
 		value="defaultState" />
 	District :
 	<select id="district"></select>
+	Panchayat:
+	<select id="panchayat"></select>
 </body>
 
 </html>
