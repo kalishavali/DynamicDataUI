@@ -1,83 +1,82 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<html>
-<head>
-<script src="js/jquery-1.11.1.min.js"></script>
-<script>
-	$(function() {
+<%@ page pageEncoding="UTF-8" %> 
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<title></title> 
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
+<script type="text/javascript" > 
 
-		//We commented this code because we are directly loading the drop down options via struts UI tag
-		/*$('#state').html('');
-		$.getJSON("readStates", function(res) {
-			for ( var i = 0; i < res.states.length; i++) {
-				$('#state').append(
-						'<option value='+res.states[i]+'>' + res.states[i]
-								+ '</option>');
-			}
-		});*/
+function getCountry(){ 
+	$.getJSON('readDropdown', function(data) { 
+	ddl2=$("#district"); 
+		if (data) { 
+			ddl2.html();
+			$.each(data.dropDownData, function(key, val) {
+	           $('#district').append('<option value="' + key + '">' + val + '</option>');
+	        }); 
+		} else { 
+			ddl2.append($('<option/>').text('Select' + ddl)); 
+		} 
+	}); 
+} 
 
-		$("#state").change(
-				function() {
-					$('#district').html('');
-					var state = {
-						"state" : $("#state").val()
-					};
-					$.ajax({
-						url : "readDistricts",
-						data : JSON.stringify(state),
-						dataType : 'json',
-						contentType : 'application/json',
-						type : 'POST',
-						async : true,
-						success : function(res) {
-							console.log(res.districts.length);
-							for ( var i = 0; i < res.districts.length; i++) {
-								console.log(" " + res.districts[i]);
-								$('#district').append(
-										'<option value=' + res.districts[i] + '>'
-												+ res.districts[i]
-												+ '</option>');
-							}
-						}
-					});
-				});
-		$("#district").change(
-				function() {
-					$('#panchayat').html('');
-					var district = {
-						"district" : $("#district").val()
-					};
-					$.ajax({
-						url : "readPanchayats",
-						data : JSON.stringify(district),
-						dataType : 'json',
-						contentType : 'application/json',
-						type : 'POST',
-						async : true,
-						success : function(res) {
-							console.log(res.panchayats.length);
-							for ( var i = 0; i < res.panchayats.length; i++) {
-								console.log(" " + res.panchayats[i]);
-								$('#panchayat').append(
-										'<option value=' + res.panchayats[i] + '>'
-												+ res.panchayats[i]
-												+ '</option>');
-							}
-						}
-					});
-				});
+$(document).ready(function() { 
+	getCountry(); 
+	$('select').on('change', function() {
+		fillOptions(this.id);
 	});
-</script>
-</head>
+}); 
 
-<body>
-	<h3>Struts 2 Dynamic Drop down List</h3>
-	<s:select label="What's your State" headerKey="-1"
-		headerValue="Select State" list="states" name="state"
-		value="defaultState" />
-	District :
-	<select id="district"><option>Pleset Select State</option></select>
-	Panchayat:
-	<select id="panchayat"></select>
-</body>
+function fillOptions(dropdownId) { 
+	// $("#test1").text($('#'+dropdownId).val()); 
+	//$("#ddi").text(dropdownId); 
+	var dropdown = $('#' + dropdownId); 
+	var ddl2; 
+	if(dropdownId=="district"){
+		ddl="mandal";
+		ddl2=$("#mandal");
+		var url='readDropdown?did=' + $(dropdown).val();
+	}
+	else if(dropdownId=="mandal"){
+		ddl="panchayat";
+		ddl2=$("#panchayat");
+		var url='readDropdown?mid=' + $(dropdown).val();
+	}
+	else if(dropdownId="panchayat"){
+		ddl="village";
+		ddl2=$("#village");
+		var url='readDropdown?pid=' + $(dropdown).val();
+	}
+	$.getJSON(url , function(data) { 
+		$('option', ddl2).remove(); // Clean old options first. 
+		if (data) { 
+			$.each(data.dropDownData, function(key, value) { 
+				ddl2.append($('<option/>').val(key).text(value)); 
+			}); 
+		} else { 
+			ddl2.append($('<option/>').text('Please select' + ddl)); 
+		} 
+	}); 
+} 
+</script> 
+</head> 
+<body> 
+<form> 
+<select id="district" name="district"> 
+<option>Select district</option> 
+</select> 
+<select id="mandal" name="mandal"> 
+<option>Select mandal</option> 
+</select> 
+<select id="panchayat" name="panchayat"> 
+<option>Select panchayat</option> 
+</select> 
+<select id="village" name="village"> 
+<option>Select village</option> 
+</select> 
 
-</html>
+
+
+</form> 
+</body> 
+</html> 

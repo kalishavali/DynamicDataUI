@@ -12,20 +12,9 @@
 			</interceptor-stack>
 		</interceptors>
 		<default-interceptor-ref name="defaultStack" />
-
-		<action name="readDistricts" class="com.rajesh.struts2.ReadData"
-			method="dbDistricts">
+		<action name="readDropdown" class="com.rajesh.struts2.ReadData"
+			method="dbDropDown">
 			<result type="json"></result>
 		</action>
-
-		<action name="" class="com.rajesh.struts2.ReadData" method="dbStates">
-			<result name="success">home.jsp</result>
-		</action>
-		
-		<action name="readPanchayats" class="com.rajesh.struts2.ReadData"
-			method="dbPanchayats">
-			<result type="json"></result>
-		</action>
-
 	</package>
 </struts>
