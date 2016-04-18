@@ -1,0 +1,371 @@
+<%@ page import="com.tcs.nregs.util.ComboUtil_eng,java.util.ArrayList,java.text.SimpleDateFormat,java.util.Calendar,java.util.Date,java.util.GregorianCalendar,com.tcs.nregs.common.dao.Common_engDAO,com.tcs.nregs.common.dao.Common_engDAOImpl"
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML lang=en-uk xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<TITLE>:: GO Details ::</TITLE>
+<META content=text/html;charset=utf-8 http-equiv=Content-Type>
+<meta name="google-translate-customization"
+	content="f63a7f9efb51a908-e0466c9f1cd8045b-g27bd34fc51e61a62-f"></meta>
+<link rel="shortcut icon" href="/Nregs/images/Rep-Nregs-AP-Logo.ico" type="image/x-icon"/>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,hi,te', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript"
+	src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+	
+<script src="/Nregs/scripts/jquery.min.js" type="text/javascript"></script>
+<script src="/Nregs/scripts/styleswitch.js" type="text/javascript"></script>
+<script src="/Nregs/scripts/semantic.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="/Nregs/css/semantic.min.css" />
+<link rel="stylesheet" type="text/css" href="/Nregs/css/reveal.css" />
+<script src="/Nregs/js/semantic.min.js" type="text/javascript"></script>
+<script src="/Nregs/js/jquery.reveal.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" title=styles1 media=screen href="/Nregs/css/styles1.css" media="screen" />
+<link rel="alternate stylesheet" type="text/css" media="screen"	title=styles2 href="/Nregs/css/styles2.css" />
+<link rel="alternate stylesheet" type="text/css" media="screen"	title=styles3 href="/Nregs/css/styles3.css" />
+<link rel="alternate stylesheet" type="text/css" media="screen" title=styles4 href="/Nregs/css/styles4.css" />
+<link rel="alternate stylesheet" type="text/css" media="screen" title=styles4 href="/Nregs/css/semantic.min.css" />
+<script language="javascript" src="/Nregs/scripts/jqueryslidemenu.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+
+<!-- <script language="javascript" src="/Nregs/scripts/Mainheader.js"></script> -->
+<script language="javascript" src="/Nregs/scripts/Tooltip.js"></script>
+<link href="/Nregs/css/Tooltip_new.css" rel="stylesheet" type="text/css" />
+<!-- Disabling of right Click-->
+<script type="text/javascript">
+
+var msg = "Right-Click Disabled";
+var iex=(document.all);
+var nav=(document.layers);
+var n_6=(window.sidebar);
+if(nav)window.captureEvents(Event.MOUSEDOWN);
+if(n_6) document.addEventListener("MOUSEDOWN",no_click,true);
+function no_click(e)
+{
+  if((nav||n_6) && (e.which==2 || e.which==3))
+  {
+    alert(msg);return false;
+  }
+  if (navigator.appName == 'Microsoft Internet Explorer' 
+       && (event.button == 2 || event.button == 3))
+  {
+    alert(msg);return false;
+  }
+}
+(nav)?window.onmousedown=no_click:document.onmousedown=no_click;
+
+
+
+
+//-->
+</script>
+<%
+
+ArrayList<ArrayList<String>> spryearList = new ArrayList<ArrayList<String>>();
+if(request.getAttribute("yearList")!=null){
+	spryearList=(ArrayList<ArrayList<String>>)request.getAttribute("yearList");
+}
+ArrayList<ArrayList<String>> resultList = new ArrayList<ArrayList<String>>();
+if(request.getAttribute("resultList")!=null){
+	resultList=(ArrayList<ArrayList<String>>)request.getAttribute("resultList");
+}
+String lStrYearKey = "-1";
+
+if(request.getAttribute("YearKey")!=null)
+{
+ 	lStrYearKey = (String)request.getAttribute("YearKey");
+}
+%>
+<style>
+	.HD-txt {
+		font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px; font-weight:bold; color:#ffffff; padding-left:5px;
+	}
+	.ul-txt {
+		font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold; color:#ffffff; background-image:url(/Nregs/images/HD-BG.gif); height:22px; background-repeat:no-repeat; background-position:left top; vertical-align:middle; padding-top:4px; padding-left:16px;
+	}
+	ul {
+		list-style-image:url('/Nregs/images/Tick.gif'); line-height:20px;
+	}
+</style>
+
+<script>
+function openDoc(docName)
+{
+   window.open('LoadDocument?pathtype=GO&docName='+docName);
+}
+/*function getDisplayData(){
+	 dataString = $("#myAjaxRequestForm").serialize();  
+	    dataString = "year=2016";
+	    $.ajax({
+	        type: "POST",
+	        url: "/Nregs/FrontServlet?requestType=LandDevelopmentNewRH&actionVal=goDetails",
+	        data: dataString,
+	        dataType: "json",
+	        success: function( data, textStatus, jqXHR) {
+	    	if(data.length!=0){
+				$("#ajaxResponse").html("");
+	            for ( var i = 0; i < data.length; i++) {
+	            	var obj = data[i];
+	            	$("#ajaxResponse").append("<tr>");
+	            	for ( var j = 0; j < obj.length; j++) {
+		            	if(i%2==1){
+		            		if(j==2){
+		                		$("#ajaxResponse").append("<td height='25px' style='background: #f1f4fc;border-right:1px #b7b7b7 solid; border-bottom:1px #b7b7b7 solid;font-size:12px' align='center'><a class='RL-lnk' style='font-size:12px' href='javascript:openDoc(\""+obj[3]+"\")'>"+ obj[j] +"</a></td>");
+		                		j=j+1;
+	                    	}else{
+	                    		$("#ajaxResponse").append("<td height='25px' style='background: #f1f4fc;border-right:1px #b7b7b7 solid; border-bottom:1px #b7b7b7 solid;font-size:12px' align='center'>"+ obj[j] +"</td>"); 
+		                	}	
+			           	}else{
+			           		if(j==2){
+		                		$("#ajaxResponse").append("<td height='25px' style='border-right:1px #b7b7b7 solid; border-bottom:1px #b7b7b7 solid;font-size:12px' align='center'><a class='RL-lnk' style='font-size:12px' href='javascript:openDoc(\""+obj[3]+"\")'>"+ obj[j] +"</a></td>");
+		                		j=j+1;
+	                    	}else{
+	                    		$("#ajaxResponse").append("<td height='25px' style='border-right:1px #b7b7b7 solid; border-bottom:1px #b7b7b7 solid;font-size:12px' align='center'>"+ obj[j] +"</td>"); 
+		                	}
+				        }
+	                	
+	               	}
+	            	$("#ajaxResponse").append("</tr>");
+	             }
+				}else{
+					$("#ajaxResponse").html("");
+					$("#ajaxResponse").append("<td height='25px' style='background: #f1f4fc;border-right:1px #b7b7b7 solid; border-bottom:1px #b7b7b7 solid;font-size:12px' align='center' colspan='3'>No Data Found for the Selection</td>");
+				}
+	        },
+	        error: function(jqXHR, textStatus, errorThrown){
+	             console.log("Something really bad happened " + textStatus);
+	              $("#ajaxResponse").html(jqXHR.responseText);
+	        },
+	        beforeSend: function(jqXHR, settings){
+	            settings.data += "&dummyData=whatever";
+	            $('#myButton').attr("disabled", true);
+	        },
+	        complete: function(jqXHR, textStatus){
+	            $('#myButton').attr("disabled", false);
+	        }
+	});  
+}*/
+function loadGoData() {
+    dataString = $("#myAjaxRequestForm").serialize(); 
+    var year = $( "#myselect" ).val(); 
+    dataString = "year=" + year;
+    $.ajax({
+        type: "POST",
+        url: "/Nregs/FrontServlet?requestType=LandDevelopmentNewRH&actionVal=goDetails",
+        data: dataString,
+        dataType: "json",
+        success: function( data, textStatus, jqXHR) {
+	    	 if(data.length!=0){
+
+	            	$("#ajaxResponse").html("");
+		            for ( var i = 0; i < data.length; i++) {
+		            	var obj = data[i];
+						$("#ajaxResponse").append("<tr><td>"+obj[0]+"</td><td>"+obj[1]+"</td><td><a href='javascript:openDoc(\""+obj[3]+"\")'>"+obj[2]+"</a></td></tr>");
+		            }    
+			 }else{
+				$("#ajaxResponse").html("");
+				$("#ajaxResponse").append("<tr><td colspan='3'>No Data Found for the Selection</td></tr>");
+			 }
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+             console.log("Something really bad happened " + textStatus);
+              $("#ajaxResponse").html(jqXHR.responseText);
+        },
+        beforeSend: function(jqXHR, settings){
+            settings.data += "&dummyData=whatever";
+            $('#myButton').attr("disabled", true);
+        },
+        complete: function(jqXHR, textStatus){
+            $('#myButton').attr("disabled", false);
+        }
+
+    });        
+}
+function loadGoD() {
+    dataString = $("#myAjaxRequestForm").serialize(); 
+    dataString = "go_number=2390";
+    $.ajax({
+        type: "POST",
+        url: "/Nregs/FrontServlet?requestType=LandDevelopmentNewRH&actionVal=goEdit",
+        data: dataString,
+        dataType: "json",
+        success: function( data, textStatus, jqXHR) {
+	    	 if(data.length!=0){
+		            for ( var i = 0; i < data.length; i++) {
+		            	var obj = data[i];
+		            	$("#go_number").val(obj[1]);
+		            	$("#go_date").val(obj[3]);
+		            }    
+			 }else{
+				$("#ajaxResponse").html("");
+				$("#ajaxResponse").append("<tr><td colspan='3'>No Data Found for the Selection</td></tr>");
+			 }
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+             console.log("Something really bad happened " + textStatus);
+              $("#ajaxResponse").html(jqXHR.responseText);
+        },
+        beforeSend: function(jqXHR, settings){
+            settings.data += "&dummyData=whatever";
+            $('#myButton').attr("disabled", true);
+        },
+        complete: function(jqXHR, textStatus){
+            $('#myButton').attr("disabled", false);
+        }
+
+    });        
+}
+
+</script>
+<script>
+$( document ).ready(function() {
+	$( "#myid" ).click(function() {
+		loadGoD();
+	});
+});
+</script>
+</head>
+<body >
+<%if(request.getAttribute("result")!=null ){ %>
+<script>
+alert('<%=request.getAttribute("result")%>');
+</script>
+<%}%>
+<div class="zoomcontrol">
+<script>
+ 	window.resizeTo (screen.availWidth, screen.availHeight);
+  	window.moveTo (0, 0);
+  	window.history.forward(1);
+</script>
+<form style="padding:0px; margin:0px;" name='myform' ENCTYPE="multipart/form-data" method="post">
+<%if(session.getAttribute("Status")!=null && session.getAttribute("Status").equals("SUCCESS")){ %>
+
+<table width="98%" border="0" cellspacing="2" cellpadding="0" align="center">
+<tr>
+    <td align="center"><table width="98%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td height="25" colspan="3" align="right" valign="middle"><a href="#" class="top-mini-lnk">Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" class="top-mini-lnk">Sitemap</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" class="top-mini-lnk">Contact Us</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" class="top-mini-lnk">Feedback</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+      </tr>
+      <tr>
+        <td align="left" valign="middle"><img src="images/NREGS-LOGO.png" width="148" height="110" alt="NREGS LOGO" /></td>
+        <td align="center" valign="middle"><img src="images/HD-TXT.png" width="693" height="80" /></td>
+        <td align="right" valign="middle"><img src="images/MGNREGS-LOGO.png" width="130" height="100" alt="MGNREGS LOGO" /></td>
+      </tr>
+ <tr>
+        <td height="28" colspan="3" style="background-image: url(images/Menu-bg.png)"><table cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td align="left" valign="middle" width="40%" style="padding-left: 5px;"><div id="myslidemenu" class="jqueryslidemenu" style="float: left;">
+              <ul>                
+                <li><a href="/Nregs/FrontServlet?requestType=NodalBankLogin_engRH&actionVal=GoChangePassword">Change Password</a></li>
+                <li><a href="/Nregs/FrontServlet?requestType=Common_Ajax_engRH&actionVal=display&page=goUpload">GO Upload</a></li>
+                <li><a href="/Nregs/FrontServlet?requestType=NodalBankLogin_engRH&actionVal=Gologout">Logout</a></li>                
+              </ul>
+            </div></td>
+          </tr>
+        </table></td>
+      </tr>
+    </table>
+    </td>
+ </tr>
+</table>
+<%} %>
+<table width="97%" border="0" cellspacing="0" cellpadding="0" align="center">
+<%if(session.getAttribute("Status")==null){ %>
+
+		 	<tr> 
+				<td>
+					<!-- Header JS starts-->
+						<script src="/Nregs/scripts/Mainheader.js" type="text/javascript"></script>
+					<!-- Header JS ends-->
+				</td>
+			</tr>
+		<tr>
+<%} %>	
+			<td style="background-color: #fff; padding: 5px; height: 400px; vertical-align: top;">
+				<!-- Body Content Starts -->
+				<table width="60%" border="0" cellspacing="2" cellpadding="0" align="center">
+					<tr>
+						<td align="center" valign="top" class="main-Rep-hd-txt_GO">
+							GOS DETAILS
+						</td>
+					</tr>
+					<tr>
+						<td align="center" class="rpt-bg">
+							<div class="cont-rnd-crnr">
+									<table cellpadding="0" cellspacing="0" border="0" width="98%">
+										
+										<tr>
+											<td style="text-align:right" align="right" valign="middle" class="formbgGO">Year :</td>
+											<td  align="left" valign="middle" class="formbgGO">
+					                    		<%ComboUtil_eng.createGoComboBox(out,"myselect",spryearList,lStrYearKey,"wdth","onChange='loadGoData()'");%>
+					                    	</td>
+										</tr>
+													
+									</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td align="center" class="rpt-bg">
+							<table class="ui center aligned small stackable celled selectable structured table" style="font-family:Lato;font-size:14px;margin-left:auto;margin-right: auto;width:900px">
+								<thead class="ui center aligned inverted grey table">
+									<tr>
+										<th >Date</th>
+										<th >GO/Memo/Circular Number</th>
+										<th >Subject</th>
+									</tr>
+								</thead>
+								<tbody id="ajaxResponse">
+								
+									<%if(resultList.size()>0){
+										for(int i=0;i<resultList.size();i++){%>
+											<tr>
+											<td><%=resultList.get(i).get(0) %></td>
+											<td><%=resultList.get(i).get(1) %></td>
+											<td><a  href="javascript:openDoc('<%=resultList.get(i).get(3) %>')"><%=resultList.get(i).get(2)%></a></td>
+											<td><a href="#" data-reveal-id="myModal" id="myid">Click Me For A Modal</a></td>
+											</tr>
+										<%} 
+									}else{%>
+										<tr>
+											<td colspan="3">No Data Found for the Selection</td>
+											</tr>
+									<%} %>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+				</tr>
+				<tr><td><script src="/Nregs/scripts/Mainfooter.js" type="text/javascript"></script></td></tr>
+				</table>
+				
+				</form>
+				<!-- tESTING -->
+				<div id="myModal" class="reveal-modal">
+     				<h1>Edit</h1>
+     				<form action="">
+     					category<input type="text" value="" id="category"/>
+     					go number<input type="text" value="" id="go_number"/>
+     					go date<input type="text" value="" id="go_date"/>
+     					subject<input type="text" value="" id="subject"/>
+     					<input type="submit"  value="submit"/>
+     				</form>
+     				<a class="close-reveal-modal">&#215;</a>
+     			</div>
+				<script>
+					$('#myModal').reveal({
+					    animation: 'fadeAndPop',                   //fade, fadeAndPop, none
+					    animationspeed: 300,                       //how fast animtions are
+					    closeonbackgroundclick: true,              //if you click background will modal close?
+					    dismissmodalclass: 'close-reveal-modal'    //the class of a button or element that will close an open modal
+					});
+				</script>
+				<!-- tESTING -->
+					</div>
+				</body>
+				</html>
