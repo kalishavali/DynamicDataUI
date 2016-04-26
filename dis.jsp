@@ -157,6 +157,7 @@ function window_open(val,x,y)
 <body >
 <script>
 var goNumberModal="";
+var seqNumModal="";
 function loadEditContent(goNumber) {
 	
     dataString = $("#editForm").serialize(); 
@@ -223,6 +224,7 @@ $(document).on("click", "#editLink", function () {
 });
 $(document).on("click", "#deleteLink", function () {
 	goNumberModal=$(this).attr("data-number");
+	seqNumModal=$(this).attr("data-value");
 	$("#goNumberModal").text(goNumberModal);
     $("#deleteModalBox").modal("setting", {
         closable: false,
@@ -247,7 +249,7 @@ $(document).on("click", "#deleteLink", function () {
 });
 
 </script>
-<script>
+<script><!--
 
 function displayGOData() {  
     dataString = "year=" + $( "#goYear" ).val();
@@ -265,7 +267,7 @@ function displayGOData() {
 		            if(sessionCheck == '' || sessionCheck == null || sessionCheck == 'null' || sessionCheck == "FAIL" ){
 		            	$("#ajaxResponse").append("<tr><td>"+obj[0]+"</td><td>"+obj[1]+"</td><td><a href='javascript:openDoc(\""+obj[3]+"\")'>"+obj[2]+"</a></td></tr>");
 			        }else{
-			            $("#ajaxResponse").append("<tr><td>"+obj[0]+"</td><td>"+obj[1]+"</td><td><a href='javascript:openDoc(\""+obj[3]+"\")'>"+obj[2]+"</a></td><td><a href='#' id='editLink' onclick='loadEditContent(\""+obj[4]+"\");'><img src='/Nregs/images/Edit.png' align='middle' border='0' style='width:22px'></a><a href='#' id='deleteLink' data-value='"+obj[4]+"' data-number='"+obj[1]+"'><img src='/Nregs/images/Delete.png' align='middle' border='0' style='width:22px'></a></td></tr>");
+			            $("#ajaxResponse").append("<tr><td>"+obj[0]+"</td><td>"+obj[1]+"</td><td><a href='javascript:openDoc(\""+obj[3]+"\")'>"+obj[2]+"</a></td><td><a href='#' id='editLink' onclick='loadEditContent(\""+obj[4]+"\");'><img src='/Nregs/images/Edit.png' align='middle' border='0' style='width:22px'></a><a href='#' id='deleteLink' data-value='"+obj[4]+"' data-number='"+obj[1]+"' ><img src='/Nregs/images/Delete.png' align='middle' border='0' style='width:22px'></a></td></tr>");
 					}
 				}    
 			 }else{
@@ -343,19 +345,27 @@ $(document).ready(function() {
 		var goNumber = document.getElementById('goNumber').value;
 		var subject = document.getElementById('subject').value;
 		var path = document.getElementById('file').value;
+		var date=document.getElementById('dmaDate12').value;
 		if(goNumber == ""){
-			alert("Please Enter Go/Circular Number");
-		     document.getElementById('goNumber').focus();
-		     return false;
+			$("#errorMsg").hide();
+			$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Please Enter GO/Circular/Memo Number</span>").insertBefore("#editForm");
+		    document.getElementById('goNumber').focus();
+		    return false;
 		}else if(subject == ""){
-			alert("Please Enter Subject");
+			$("#errorMsg").hide();
+			$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Please Enter Subject for the GO</span>").insertBefore("#editForm");
 		     document.getElementById('subject').focus();
 		     return false;
 		}else if(path != "" && path.substring(path.lastIndexOf(".")+1)!='PDF' && path.substring(path.lastIndexOf(".")+1)!='pdf' ){
-			alert("Please upload pdf files ");
+			$("#errorMsg").hide();
+			$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Please Select PDF Files Only</span>").insertBefore("#editForm");
 		    document.getElementById('uploadFile').focus();
 			document.getElementById("upload").disabled=true;
 			return false; 
+		}else if(date == ""){
+			$("#errorMsg").hide();
+			$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Please Select the Date</span>").insertBefore("#editForm");
+		     document.getElementById('dmaDate12').focus();
 		}else{
 			var seqNumber = document.getElementById("seqNumber").value;
 			var fileName = document.getElementById("fileName").value;
@@ -378,13 +388,16 @@ $(document).ready(function() {
 				if (this.status == 200) {
 					var result = JSON.parse(this.responseText);
 					if(result == 1){
+						$("#errorMsg").hide();
 						$("#editForm").hide();
 						$("#upload").hide();
 						$("#cancelButton").hide();
 						$("#updateResponse").append("<span class='ig-message ng-binding ig-success-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Successfully Updated the GO Information </span>");
 						$("#returnToHome").append("<div class='actions'><div class='ui approved button' data-value='close' style='margin-left:450px;height:35px'>Close</div></div>");
 					}else{
-						$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>File Upload Failed.Please Try Again.. </span>").insertAfter("#editHead");
+						$("#errorMsg").hide();
+						$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>File Upload Failed.Please Try Again.. </span>").insertBefore("#editForm");
+						
 					}
 				}
 			};
@@ -394,8 +407,8 @@ $(document).ready(function() {
 	});
 	//Deletion 
 	$("#confirm").click(function(){
-			var seqNumber=$("#deleteLink").attr("data-value");
-			var goNumber=$("#deleteLink").attr("data-number");
+			var seqNumber=seqNumModal;
+			var goNumber=goNumberModal;
 			$("#errorMsg").hide();
 			var xhr = new XMLHttpRequest();       
 			xhr.open("POST","/Nregs/FrontServlet?requestType=LandDevelopmentNewRH&actionVal=deleteGoDetails&seqNumber="+seqNumber+" ", true);
@@ -409,7 +422,10 @@ $(document).ready(function() {
 						$("#deleteResponse").replaceWith("<span class='ig-message ng-binding ig-success-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Successfully Deleted the GO/Circular/Memo No:"+goNumber+" Information </span>");
 						$("#returnToHome1").append("<div class='actions'><div class='ui approved button' data-value='close' style='margin-left:600px;height:35px'>Close</div></div>");
 					}else{
-						$("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Deleting GO Information Failed.Please Try Again.. </span>").insertAfter("#deleteHead");
+						$("#confirm").hide();
+						$("#cancelButton1").hide();
+						$("#deleteResponse").replaceWith("<span id='errorMsg' class='ig-message ng-binding ig-error-message' ng-class='{'ig-error-message' : (info.type == 'error'), 'ig-success-message' : (info.type == 'success')}'>Deleting GO Information Failed.Please Try Again.. </span>");
+						$("#returnToHome1").append("<div class='actions'><div class='ui approved button' data-value='close' style='margin-left:600px;height:35px'>Close</div></div>");
 					}
 				}
 			};
@@ -589,7 +605,7 @@ $(document).ready(function() {
 											<td><a  href="javascript:openDoc('<%=resultList.get(i).get(3) %>')"><%=resultList.get(i).get(2)%></a></td>
 											<%if(session.getAttribute("Status")!=null && session.getAttribute("Status").equals("SUCCESS")){ %>
 												<td><a href="#" id="editLink"  onclick="loadEditContent('<%=resultList.get(i).get(4)%>');"><img src="/Nregs/images/Edit.png" align="middle" border="0" style="width:22px"></a>
-												<a href="#" id="deleteLink" data-value='<%=resultList.get(i).get(4)%>' data-number='<%=resultList.get(i).get(1) %>'><img src="/Nregs/images/Delete.png" align="middle" border="0" style="width:22px"></a></td>
+												<a href="#" id="deleteLink" data-value='<%=resultList.get(i).get(4)%>' data-number='<%=resultList.get(i).get(1) %>' ><img src="/Nregs/images/Delete.png" align="middle" border="0" style="width:22px"></a></td>
 											<%} %>
 											</tr>
 										<%} 
