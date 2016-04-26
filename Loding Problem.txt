@@ -1,0 +1,29 @@
+CREATE SEQUENCE UPLOAD_GOS_SEQ 
+START WITH 1 
+INCREMENT BY 1
+
+INSERT INTO UPLOAD_GOS_DATA(CATEGORY, GO_NUMBER, GO_DATE, SUBJECT, FILE_NAME, USER_NAME, UPLOAD_DATE, SEQUENCE_NO)
+VALUES('','','','','','','',UPLOAD_GOS_SEQ.NEXTVAL);
+
+
+
+SELECT --SUBSTR(W.FILE_NAME,1,4),SUBSTR(W.FILE_NAME,1,INSTR(W.FILE_NAME,'.',1,REGEXP_COUNT(W.FILE_NAME,'[.]'))-5),\n" +
+							"NVL(TO_NUMBER(MAX(SUBSTR(SUBSTR(W.FILE_NAME,1,INSTR(W.FILE_NAME,'.',1,REGEXP_COUNT(W.FILE_NAME,'[.]'))-1),-3))),0) A\n" + 
+							"FROM UPLOAD_GOS_DATA  W\n" + 
+							"WHERE SUBSTR(W.FILE_NAME,1,4) IN ('"+userName+"')\n" + 
+							"AND SUBSTR(W.FILE_NAME,1,INSTR(W.FILE_NAME,'.',1,REGEXP_COUNT(W.FILE_NAME,'[.]'))-5) = '"+userName+"_"+goNumber+"'\n" + 
+							"--GROUP BY SUBSTR(W.FILE_NAME,1,4),SUBSTR(W.FILE_NAME,1,INSTR(W.FILE_NAME,'.',1,REGEXP_COUNT(W.FILE_NAME,'[.]'))-5)
+
+
+update UPLOAD_GOS_DATA set IS_DELETE='Y',upload_Date=sysdate where user_name='"+userName+"' AND SEQUENCE_NO='"+sequenceNumber+"' 
+
+
+update UPLOAD_GOS_DATA set category='"+category+"',go_number='"+gonumber+"',go_date='"+goDate+"', subject='"+subject+"', file_name='"+fname+"', upload_Date=sysdate where user_name='"+userName+"' and SEQUENCE_NO='"+sequenceNumber+"' 
+
+
+select category,go_number,subject,go_date,file_name from UPLOAD_GOS_DATA where SEQUENCE_NO='"+sequence_Number+"' AND user_name='"+userName+"' order by go_date
+
+
+insert into UPLOAD_GOS_DATA (category,go_number,go_date,subject,file_name,user_name,upload_Date,SEQUENCE_NO,IS_DELETE) values ('"+category+"','"+gonumber+"','"+goDate+"','"+subject+"','"+fname+"','"+userName+"',sysdate,UPLOAD_GOS_SEQ.NEXTVAL,'N')
+
+select go_date,go_number,subject,file_name,SEQUENCE_NO from UPLOAD_GOS_DATA where TO_CHAR(TO_DATE(go_date,'DD-MM-YYYY'),'YYYY')='"+year+"' AND user_name='"+userName+"' AND IS_DELETE='N' order by go_date
