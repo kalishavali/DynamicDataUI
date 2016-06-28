@@ -1,292 +1,388 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    <%@page import="java.util.ArrayList" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>Localhost</title>
-    <link href="semantic.min.css" rel="stylesheet" type="text/css" />  
-    <link rel="stylesheet" href="icon.css" >  
-    <script src="jquery.min.js" type="text/javascript"></script>
-    <script src="semantic.min.js" type="text/javascript"></script>
-<style>
-.ui.action.input input[type="file"] {
-    display: none;
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.semanticui.min.css">
+	<script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.3.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.semanticui.min.js"></script>
+	<script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+	<script type="text/javascript" class="init">
+	
+	(function(window, document, undefined){
+
+	var factory = function( $, DataTable ) {
+	"use strict";
+
+	/* Set the defaults for DataTables initialisation */
+	$.extend( true, DataTable.defaults, {
+		dom:
+			"<'left aligned eight wide column'l><'right aligned eight wide column'f>" +
+			"<'sixteen wide column'tr>" +
+			"<'left aligned four wide column'i><'right aligned twelve wide column'p>",
+		renderer: 'semantic'
+	} );
+
+	$.extend( DataTable.ext.pager, {
+			full_numbers_icon: DataTable.ext.pager.full_numbers
+	});
+
+	/* Default class modification */
+	$.extend( DataTable.ext.classes, {
+		sWrapper:      "ui grid dataTables_wrapper ",
+		sFilterInput:  "",
+		sLengthSelect: ""
+	} );
+
+	/* Bootstrap paging button renderer */
+	DataTable.ext.renderer.pageButton.semantic = function ( settings, host, idx, buttons, page, pages ) {
+		var api     = new DataTable.Api( settings );
+		var classes = settings.oClasses;
+		var lang    = settings.oLanguage.oPaginate;
+		var btnDisplay, btnClass, btnIcon, counter=0;
+	    var addIcons = (( !api.init().pagingType ? '' : api.init().pagingType.toLowerCase() ).indexOf('icon') !== -1 );
+		
+		var attach = function( container, buttons ) {
+			var i, ien, node, button;
+			var clickHandler = function ( e ) {
+				e.preventDefault();
+				if ( !$(e.currentTarget).hasClass('disabled') ) {
+					api.page( e.data.action ).draw( 'page' );
+				}
+			};
+
+			for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
+				button = buttons[i];
+
+				if ( $.isArray( button ) ) {
+					attach( container, button );
+				}
+				else {
+					btnDisplay = '';
+					btnClass = '';
+	                btnIcon = '';
+					switch ( button ) {
+						case 'ellipsis':
+						    btnDisplay = ( addIcons  ? '<i class="mini ellipsis horizontal icon"></i>' : '&hellip;');
+							btnClass = 'disabled';
+							break;
+
+						case 'first':
+						    btnIcon = ( addIcons ? '<i class="angle single left icon"></i>' : '');
+							btnDisplay = btnIcon + lang.sFirst;
+							btnClass = button + (page > 0 ?
+								'' : ' disabled');
+							break;
+
+						case 'previous':
+						    btnIcon = ( addIcons ? '<i class="angle double left icon"></i>' : '');
+							btnDisplay = btnIcon + lang.sPrevious;
+							btnClass = button + (page > 0 ?
+								'' : ' disabled');
+							break;
+
+						case 'next':
+	                        btnIcon = ( addIcons ? '<i class="angle double right icon"></i>' : '');
+							btnDisplay = lang.sNext + btnIcon;
+							btnClass = button + (page < pages-1 ?
+								'' : ' disabled');
+							break;
+
+						case 'last':
+	                        btnIcon = ( addIcons ? '<i class="angle single right icon"></i>' : '');
+							btnDisplay = lang.sLast + btnIcon;
+							btnClass = button + (page < pages-1 ?
+								'' : ' disabled');
+							break;
+
+						default:
+							btnDisplay = button + 1;
+							btnClass = page === button ?
+								'active' : '';
+							break;
+					}
+	                
+				
+					
+					if ( btnDisplay ) {
+						node = $('<a>', {
+								'class': classes.sPageButton+' '+btnClass+' item ',
+								'id': idx === 0 && typeof button === 'string' ?
+									settings.sTableId +'_'+ button :
+									null
+							} ).html( btnDisplay ).appendTo( container );
+
+						settings.oApi._fnBindAction(
+							node, {action: button}, clickHandler
+						);
+
+						counter++;
+					}
+				}
+			}
+		};
+
+	    
+					 
+		// IE9 throws an 'unknown error' if document.activeElement is used
+		// inside an iframe or frame. 
+		var activeEl;
+
+		try {
+			// Because this approach is destroying and recreating the paging
+			// elements, focus is lost on the select button which is bad for
+			// accessibility. So we want to restore focus once the draw has
+			// completed
+			activeEl = $(host).find(document.activeElement).data('dt-idx');
+		}
+		catch (e) {}
+
+		attach(
+			$(host).empty().html('<div class="ui stackable small pagination menu"/>').children('div'),
+			buttons
+		);
+
+		if ( activeEl ) {
+			$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
+		}
+	};
+
+	}; // /factory
+
+
+	// Define as an AMD module if possible
+	if ( typeof define === 'function' && define.amd ) {
+		define( ['jquery', 'datatables'], factory );
+	}
+	else if ( typeof exports === 'object' ) {
+	    // Node/CommonJS
+	    factory( require('jquery'), require('datatables') );
+	}
+	else if ( jQuery ) {
+		// Otherwise simply initialise as normal, stopping multiple evaluation
+		factory( jQuery, jQuery.fn.dataTable );
+	}
+
+
+	})(window, document);
+
+
+	$(document).ready(function() {
+	    
+
+	    
+		 var dtable = $('#example').DataTable({
+	     	  "pagingType": "full_numbers_icon",
+			order: [ 1, 'desc' ],
+		 
+		
+
+		 });
+	   
+	    
+	});
+	</script>
+	<style>
+	.ui.table.dataTable thead th {
+  cursor: pointer;
+  white-space: nowrap;
+  border-left: 1px solid rgba(34, 36, 38, 0.15);
+  color: rgba(0, 0, 0, 0.87);
 }
-</style>
-<style>
-.ui.action.input input[type="file"] {
-    display: none;
+
+.ui.table.dataTable thead th:first-child {
+  border-left: none;
 }
-.ig-error-message {
-	color:#dc0028;
-	border:1px dashed #dc0028
+
+.ui.table.dataTable thead .sorting,
+.ui.table.dataTable thead .sorting_asc ,
+.ui.table.dataTable thead .sorting_desc ,
+.ui.table.dataTable thead .sorting_asc_disabled ,
+.ui.table.dataTable thead .sorting_desc_disabled,
+.ui.table.dataTable thead .sorting:hover,
+.ui.table.dataTable thead .sorting_asc:hover ,
+.ui.table.dataTable thead .sorting_desc:hover ,
+.ui.table.dataTable thead .sorting_asc_disabled:hover ,
+.ui.table.dataTable thead .sorting_desc_disabled:hover  {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
-.ig-success-message {
-    color: green;
-    border: 1px dashed green;
+
+.ui.table.dataTable thead th:after {
+  display: none;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  content: '';
+  height: 1em;
+  width: auto;
+  opacity: 0.8;
+  margin: 0em 0em 0em 0.5em;
+  font-family: 'Icons';
 }
-.ig-message {
-    display: block;
-    text-align: center;
-    padding: 4px;
-    font-weight: 400px;
-    font-size: 22px;
-    margin-bottom: 7px;
+
+.ui.table.dataTable thead th.sorting_asc:after {
+  /*content: '\f0d8';*/
+  content: '\f160';
 }
-.ig-color-red, .ig-delivery, .ig-form-message, .ig-message {
-    font-family: Lato,"Trebuchet MS",Helvetica,sans-serif;
+
+.ui.table.dataTable thead th.sorting_desc:after {
+  /*content: '\f0d7';*/
+  content: '\f161';
 }
-*, :after, :before {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
+
+.ui.table.dataTable thead th.sorting:after {
+    content: '\f0dc';
+    opacity: 0.2;
 }
-</style>
+
+/* Hover */
+
+.ui.table.dataTable th.disabled:hover {
+  cursor: auto;
+  color: rgba(40, 40, 40, 0.3);
+}
+
+.ui.table.dataTable thead th:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+/* Sorted */
+
+.ui.table.dataTable thead .sorting_asc ,
+.ui.table.dataTable thead .sorting_desc ,
+.ui.table.dataTable thead .sorting_asc_disabled ,
+.ui.table.dataTable thead .sorting_desc_disabled {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.ui.table.dataTable thead .sorting:after ,
+.ui.table.dataTable thead .sorting_asc:after ,
+.ui.table.dataTable thead .sorting_desc:after ,
+.ui.table.dataTable thead .sorting_asc_disabled:after ,
+.ui.table.dataTable thead .sorting_desc_disabled:after {
+  display: inline-block;
+}
+
+/* Sorted Hover */
+
+.ui.table.dataTable thead .sorting_asc:hover ,
+.ui.table.dataTable thead .sorting_desc:hover ,
+.ui.table.dataTable thead .sorting_asc_disabled:hover ,
+.ui.table.dataTable thead .sorting_desc_disabled:hover  {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.95);
+}
+
+
+.dataTables_length select {
+   background: #fff none repeat scroll 0 0;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.285714rem;
+    box-shadow: none;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: pointer;
+    display: inline-block;
+     line-height: 1.2142em;
+    min-height:   0.714286em;
+  
+    outline: 0 none;
+    padding: 0.3em;
+    transform: rotateZ(0deg);
+    transition: box-shadow 0.1s ease 0s, width 0.1s ease 0s;
+    white-space: normal;
+    word-wrap: break-word; 
+	 }
+  
+  .dataTables_wrapper .dataTables_filter {
+	text-align: right; 
+   
+    color: rgba(0, 0, 0, 0.87);
+    display: inline-flex;
+    position: relative;
+   }
+	
+   .dataTables_wrapper .dataTables_filter input {
+	  margin-left: 0.5em; 
+   }
+  
+  .dataTables_wrapper .dataTables_info {
+	clear: both;
+	padding-top: 0.755em; 
+   }
+   
+.dataTables_filter input {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.285714rem;
+    box-shadow: none;
+    color: rgba(0, 0, 0, 0.87);
+    flex: 1 0 auto;
+    font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+	height:1em;
+    margin: 0;
+    max-width: 100%;
+    outline: 0 none;
+    padding: .4em;
+    text-align: left;
+    transition: background-color 0.1s ease 0s, box-shadow 0.1s ease 0s, border-color 0.1s ease 0s;
+}
+
+
+
+
+
+	
+	</style>
+<%
+	ArrayList<ArrayList<String>> resultList=new ArrayList<ArrayList<String>>();
+	resultList=(ArrayList)request.getAttribute("resultList");
+	
+%>
 </head>
-<script>
-//Stops the submit request
-
-
-$( document ).ready(function() {
-	
-	loadDefault();
-	
-	
-	
-});
-
-function loadDefault(){
-	 //get the form data and then serialize that
-    dataString = $("#myAjaxRequestForm").serialize();
-   
-    //get the form data using another method 
-    var countryCode = $("input#countryCode").val(); 
-    dataString = "year=2016";
-   
-    //make the AJAX request, dataType is set to json
-    //meaning we are expecting JSON data in response from the server
-    $.ajax({
-        type: "POST",
-        url: "CountryInformation",
-        data: dataString,
-        dataType: "json",
-       
-        //if received a response from the server
-        success: function( data, textStatus, jqXHR) {
-        	var result = JSON.parse(data);
-        	alert(result['Name']);
-            //our country code was correct so we have some information to display
-             if(data.length>0){
-				$("#ajaxResponse").html("");
-            	 for(var i=0;i<data.length;i++){
-            		 var obj=data[i];
-                     $("#ajaxResponse").append("<tr><td> " + obj[0]+ "</td><td> " + obj[1] + "</td><td> " + obj[2] + "</td><td><a href='#' id='editLink' onclick='loadEditData(\""+obj[1]+"\");'>Edit</a></td><td><a href='#' id='deleteLink'>Delete</a></td></tr>");
-            	 }
-                 
-             } 
-             //display error message
-             else {
-                 $("#ajaxResponse").html("<div><b>Country code in Invalid!</b></div>");
-             }
-        },
-       
-        //If there was no resonse from the server
-        error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-              $("#ajaxResponse").html(jqXHR.responseText);
-        },
-       
-        //capture the request before it was sent to server
-        beforeSend: function(jqXHR, settings){
-            //adding some Dummy data to the request
-            settings.data += "&dummyData=whatever";
-            //disable the button until we get the response
-            $('#myButton').attr("disabled", true);
-        },
-       
-        //this is called after the response or error functions are finsihed
-        //so that we can take some action
-        complete: function(jqXHR, textStatus){
-            //enable the button 
-            $('#myButton').attr("disabled", false);
-        }
-
-    });        
-}
-//For Loading Edit GO Information in Form
-function loadEditDetails(seqNumber){
-   
-    //get the form data using another method 
-    var dataString = "seqNumber="+seqNumber;
-   
-    //make the AJAX request, dataType is set to json
-    //meaning we are expecting JSON data in response from the server
-    $.ajax({
-        type: "POST",
-        url: "CountryInformation",
-        data: dataString,
-        dataType: "json",
-       
-        //if received a response from the server
-        success: function( data, textStatus, jqXHR) {
-            //our country code was correct so we have some information to display
-             if(data.length>0){
-				$("#ajaxResponse").html("");
-            	 for(var i=0;i<data.length;i++){
-            		 var obj=data[i];
-                     $("#ajaxResponse").append("<tr><td> " + obj[0]+ "</td><td> " + obj[1] + "</td><td> " + obj[2] + "</td><td><a href='#' id='editLink' onclick='loadEditData(\""+obj[1]+"\");'>Edit</a></td><td><a href='#' id='deleteLink'>Delete</a></td></tr>");
-            	 }
-                 
-             } 
-             //display error message
-             else {
-                 $("#ajaxResponse").html("<div><b>Country code in Invalid!</b></div>");
-             }
-        },
-       
-        //If there was no resonse from the server
-        error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-              $("#ajaxResponse").html(jqXHR.responseText);
-        },
-       
-        //capture the request before it was sent to server
-        beforeSend: function(jqXHR, settings){
-            //adding some Dummy data to the request
-            settings.data += "&dummyData=whatever";
-            //disable the button until we get the response
-            $('#editLink').attr("disabled", true);
-        },
-       
-        //this is called after the response or error functions are finsihed
-        //so that we can take some action
-        complete: function(jqXHR, textStatus){
-            //enable the button 
-            $('#editLink').attr("disabled", false);
-        }
-
-    });        
-}
-</script>
-<script>
-$(document).on("click", "#editLink", function () {
-	$("#modalHeader").text("Edit GO Details");
-	$("#deleteForm").hide();
-	$("#confirm").hide();
-	$("#editForm").show();
-    $(".ui.modal").modal("setting", {
-        closable: false,
-        onApprove: function () {
-            return false;
-        }
-    }).modal("show");
-}).on("click", ".ui.button", function () {
-    switch ($(this).data("value")) {
-        case 'close':
-            $("#result").html("easy");
-            $(".ui.modal").modal("hide");
-            break;
-    }
-});
-$(document).on("click", "#deleteLink", function () {
-	$("#modalHeader").text("Delete GO Information");
-	$("#editForm").hide();
-	$("#submit").hide();
-	$("#deleteForm").show();
-    $(".ui.modal").modal("setting", {
-        closable: false,
-        onApprove: function () {
-            return false;
-        }
-    }).modal("show");
-}).on("click", ".ui.button", function () {
-    switch ($(this).data("value")) {
-        case 'close':
-            $("#result").html("easy");
-            $(".ui.modal").modal("hide");
-            break;
-    }
-});
-$(function(){
-	$('.ui.dropdown').dropdown();
-	$('input:text, .ui.button', '.ui.action.input').on('click', function(e) {
-    	$('input:file', $(e.target).parents()).click();
-	});
-	$('input:file', '.ui.action.input').on('change', function(e) {
-    	var name = e.target.files[0].name;
-    	$('input:text', $(e.target).parent()).val(name);
-	});
-});
-</script>
 <body>
-<div style="height:120px">
-</div>
-   <table class="ui center aligned celled structured table" style="width:600px;margin-left:400px">
-   	<thead>
-   		<tr>
-   			<th>Date</th>
-   			<th>GO/Circular/Memo No</th>
-   			<th>Subject</th>
-   			<th>Edit</th>
-   		</tr>
-   	</thead>
-   	<tbody id="ajaxResponse" class="celled structured table">
-   	</tbody>
-   </table>  
-<!-- Modal -->
-<div class="ui small modal">
-	<div class="ui header" id="modalHeader"></div>
-    <div class="content" id="modalResponse">
-    	<form class="ui form" id="editForm">
-		   <div class="two fields">
-		    <div class="field">
-		    <div class="ui labeled input"> 
-		    <div class="ui label">Category</div>
-		      <select class="ui fluid dropdown" name="category" id="category">
-		        <option value="Go">Go</option>
-		    <option value="Circular">Circular</option>
-		    <option value="Memo">Memo</option>
-		      </select>
-		      </div>
-		    </div>
-		    <div class="field">
-		        <div class="ui labeled input"> 
-			       <div class="ui label">GO/Circular/Memo No</div>
-			       <input  name="goNumber" id="goNumber"/>
-		         </div>
-		      </div>
-		  </div>
-		    <div class="two fields">
-		      <div class="field">
-		      	<div class="ui labeled input"> 
-		      	<div class="ui label">Date</div>
-		        <input type="text" name="goDate" id="goDate">
-		        </div>
-		      </div>
-		      <div class="field">
-		      	<div class="ui labeled input"> 
-		      	<div class="ui label">Subject</div>
-		        <input type="text" name="subject" id="subject">
-		      </div>
-		    </div>
-		  </div>
-		 <div class="two fields" style="margin-left:160px;width:800px">
-			    <div class="ui fluid action input field">
-			        <input type="text" readonly>
-			        <input type="file" name="file" id="file">
-			        <div class="ui icon button">
-			            Upload<i class="cloud upload icon"></i>
-			        </div>
-			   </div>
-		  </div>
-		</form>
-		<div class="content" id="deleteForm" style="font-family:Lato;color:teal;text-align:center">
-			Please confirm that you wish to delete GO/Circular/Memo No: <span id="goNumberModal"></span> Information
-		</div>
-	</div>
-	<div class="actions" id="modalActions">
-	    <div class="ui button" id="submit" style="height:35px">Submit</div>
-	    <div class="ui button" id="confirm" style="height:35px">Confirm</div>
-	    <div class="ui cancel button" id="cancelButton" style="height:35px">Cancel</div>
-  	</div>
-</div>
-
+<div class="ui main container" >
+<p></p>
+  <table id="example" class="ui compact selectable striped celled table" cellspacing="0" width="100%" >
+  <thead>
+            <tr>
+            	<th>S.No</th>
+                <th>Date</th>
+                <th>Newspaper Name</th>
+                <th>District Name</th>
+                <th>Article Discription</th>
+                <th>Article Download</th>
+            </tr>
+        </thead>
+ 
+  
+ 
+        <tbody>
+        <%if(resultList.size()>0){
+        	for(int i=0;i<resultList.size();i++){ %>
+        		<tr>
+        		<td></td>
+                <td><%=resultList.get(i).get(0)%></td>
+                <td><%=resultList.get(i).get(1)%></td>
+                <td><%=resultList.get(i).get(2)%></td>
+                <td><%=resultList.get(i).get(3)%></td>
+                <td><a href="#"><%=resultList.get(i).get(4)%></a></td>
+            	</tr>
+        <% 	}
+        } %>
+                
+            
+        </tbody>
+</table></div>
 
 </body>
 </html>
