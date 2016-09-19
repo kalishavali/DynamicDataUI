@@ -1,0 +1,48 @@
+package Arrays;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class test {
+	public static void main(String[] args) {
+		ArrayList<ArrayList<String>> dataList=new ArrayList<ArrayList<String>>();
+		ArrayList<String> subList=new ArrayList<String>();
+		subList.add("Chittor");
+		subList.add("10");
+		subList.add("35");
+		dataList.add(subList);
+		subList=new ArrayList<String>();
+		subList.add("Chittor");
+		subList.add("10");
+		subList.add("24");
+		dataList.add(subList);
+		subList=new ArrayList<String>();
+		subList.add("Chittor");
+		subList.add("10");
+		subList.add("12");
+		dataList.add(subList);
+		subList=new ArrayList<String>();
+		subList.add("Kurnool");
+		subList.add("12");
+		subList.add("06");
+		dataList.add(subList);
+		subList=new ArrayList<String>();
+		Map<String,Integer> map=new HashMap<String,Integer>();
+		for(int i=0;i<dataList.size();i++){
+			if(map.containsKey(dataList.get(i).get(1))){
+				map.put( dataList.get(i).get(1), map.get( dataList.get(i).get(1))+1 );
+			}else{
+				map.put(dataList.get(i).get(1),1);
+			}
+			map.put("ap",i+1);
+		}
+		for(String key: map.keySet()){
+			System.out.println(key+"---"+map.get(key));
+		}
+		
+		
+	}
+}
